@@ -4,7 +4,6 @@ def music(folder, folder1):
     name1 = '.'
     for (path, dirs, files) in os.walk(folder):
         subp = path[(len(folder)+1):]
-        #print('subp ' + subp)
         for file in files:
             name, ext = os.path.splitext(file)
             if ext == '.jpg' or ext == '.png' or ext == '.ini' or ext == '.db':
@@ -13,7 +12,6 @@ def music(folder, folder1):
             file = path + '/' + file
             for (path1, dirs1, files1) in os.walk(folder1):
                 subp1 = path1[(len(folder1)+1):]
-                print('subp1 ' + subp1)
                 for file1 in files1:
                     name1 = os.path.basename(file1)
                     file1 = path1 + '/' + file1
