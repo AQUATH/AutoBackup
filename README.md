@@ -1,6 +1,6 @@
 # AutoBackup
 
-A simple Open-Source Backup Project in Python 3.x for Music and Save files.
+A simple Open-Source backup project in Python 3.x for music and game save files.
 <br>
 <br>Latest Version: 1.1
 <br>Anyone can help.
