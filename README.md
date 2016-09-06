@@ -1,2 +1,2 @@
 # AutoBackup
-First released version (1.0) of AutoBackup.
+First released version of AutoBackup.
