@@ -10,8 +10,12 @@ def music(folder, folder1):
                 continue
             name = name + ext
             file = path + '/' + file
-            for (path1, dirs1, files1) in os.walk(folder1):
-                subp1 = path1[(len(folder1)+1):]
+            path_ = folder1 + '/' + subp
+            if not os.path.exists(path_):
+                    print('Directory not found, creating..')
+                    os.makedirs(path_)
+                    print('Directory created.')
+            for (path1, dirs1, files1) in os.walk(path_):
                 for file1 in files1:
                     name1 = os.path.basename(file1)
                     file1 = path1 + '/' + file1
@@ -19,13 +23,8 @@ def music(folder, folder1):
                         break
                 if name == name1:
                     break
-            if name != name1 or (name == name1 and subp != subp1):
+            if name != name1:
                 print(name + ' Not found')
-                path_ = folder1 + '/' + subp
-                if not os.path.exists(path_):
-                    print('Directory not found, creating..')
-                    os.makedirs(path_)
-                    print('Directory created.')
                 print('Copying..')   
                 shutil.copy(file, path_)
                 print('Copy finished.')
