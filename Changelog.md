@@ -3,4 +3,4 @@
 <br>Speed improvement - updated algorithm.
 <br>
 <br><b>Version 1.0</b>
-<br>Initial public release.
+<br>Initial release.
