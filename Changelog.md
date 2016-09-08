@@ -1,6 +1,6 @@
 #Changelog
 <b>Version 1.1.1</b>
-<br>Removed obsolete variable.
+<br>Minor changes.
 <br>
 <br><b>Version 1.1</b>
 <br>Speed improvement - updated algorithm.
