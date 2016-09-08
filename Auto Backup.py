@@ -18,7 +18,6 @@ def music(folder, folder1):
             for (path1, dirs1, files1) in os.walk(path_):
                 for file1 in files1:
                     name1 = os.path.basename(file1)
-                    file1 = path1 + '/' + file1
                     if name == name1:
                         break
                 if name == name1:
