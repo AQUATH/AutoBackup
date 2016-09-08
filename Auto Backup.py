@@ -61,7 +61,7 @@ def game_save(folder2, folder3):
                 print('Copy finished.')
     print('Saves Backup Finished')
 print('Music Backup - 1\nSaves Backup - 2\nBack Up Both - 3\nExit - 0')
-op_s = int(input('Select Operation - '))
+op_s = int(input('Select Operation: '))
 if op_s == 1:
     so = input('Enter Source Location: ')
     de = input('Enter Destination Location: ')
