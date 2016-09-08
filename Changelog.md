@@ -5,5 +5,5 @@
 <br><b>Version 1.1</b>
 <br>Speed improvement - updated algorithm.
 <br>
-<b>Version 1.0</b>
+<br><b>Version 1.0</b>
 <br>Initial release.
