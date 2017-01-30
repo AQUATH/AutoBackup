@@ -1,10 +1,10 @@
 #Changelog
 <b>Version 1.2.1</b>
-<br>Fixed: RecursionError caused when choosing two-way backup
-<br>Bug-fix: 'Back-up Both' option wouldn't back up music
-<br>Artwork backup now ignores every image starting with "AlbumArt" instead of "AlbumArtSmall"
-<br>Renamed some variables so as to be more descriptive about their function
-<br>Extensions aren't case-sensitive anymore
+<br>Fixed: RecursionError caused when choosing two-way backup.
+<br>Bug-fix: 'Back-up Both' option wouldn't back up music.
+<br>Artwork backup now ignores every image starting with "AlbumArt" instead of "AlbumArtSmall".
+<br>Renamed some variables so as to be more descriptive about their function.
+<br>Extensions aren't case-sensitive anymore.
 <br>
 <br><b>Version 1.2</b>
 <br>Removed the game save backup feature.
