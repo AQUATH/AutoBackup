@@ -1,4 +1,5 @@
 #Changelog
+<br>
 <b>Version 1.2.1</b>
 <br>Fixed: RecursionError caused when choosing two-way backup.
 <br>Bug-fix: 'Back-up Both' option wouldn't back up music.
