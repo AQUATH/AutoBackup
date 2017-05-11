@@ -1,4 +1,5 @@
-#Changelog
+<b>Changelog</b>
+<br>
 <br>
 <b>Version 1.2.1</b>
 <br>Fixed: RecursionError caused when choosing two-way backup.
