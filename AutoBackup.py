@@ -25,7 +25,7 @@ def func(sourceLocation, destinationLocation, operation, extras, twoWayBackup):
                 backup(sourceLocation, destinationLocation, path, file, name, ext)
             if operation == '2' or operation == '3' and ext in extArtwork and name[:8] != 'AlbumArt' and name != 'Thumbnail' and name != 'Folder':
                 backup(sourceLocation, destinationLocation, path, file, name, ext)
-    if twoWayBackup == 'y' or twoWayBackup 'Y':
+    if twoWayBackup == 'y' or twoWayBackup == 'Y':
         twoWayBackup = 'n'
         func(destinationLocation, sourceLocation, operation, extras, twoWayBackup)
 
