@@ -1,9 +1,9 @@
 import os
 import shutil
 
-extm = ['.mp3', '.flac', '.aac', '.wav', '.ape', '.alac', '.m4a', '.ogg', '.aiff', '.aif']
-exta = ['.jpg', '.png', '.bmp', '.gif', '.jpeg']
-exte = ['.m3u', '.m3u8', '.txt', '.cue', '.log']
+extMusic = ['.mp3', '.flac', '.aac', '.wav', '.ape', '.alac', '.m4a', '.ogg', '.aiff', '.aif']
+extArtwork = ['.jpg', '.png', '.bmp', '.gif', '.jpeg']
+extExtras = ['.m3u', '.m3u8', '.txt', '.cue', '.log']
 
 def backup(sourceLocation, destinationLocation, path, file, name, ext):
     pathCheck = destinationLocation + '/' + path[(len(sourceLocation)+1):] 
@@ -21,11 +21,11 @@ def func(sourceLocation, destinationLocation, operation, extras, twoWayBackup):
         for file in files:
             name, ext = os.path.splitext(file)
             ext = str.lower(ext)
-            if operation == '1' or operation == '3' and ext in extm or extras == 'y' and ext in exte:
+            if operation == '1' or operation == '3' and ext in extMusic or extras == 'y' and ext in extExtras:
                 backup(sourceLocation, destinationLocation, path, file, name, ext)
-            if operation == '2' or operation == '3' and ext in exta and name[:8] != 'AlbumArt' and name != ('Thumbnail' and 'Folder'):
+            if operation == '2' or operation == '3' and ext in extArtwork and name[:8] != 'AlbumArt' and name != 'Thumbnail' and name != 'Folder':
                 backup(sourceLocation, destinationLocation, path, file, name, ext)
-    if twoWayBackup == ('y' or 'Y'):
+    if twoWayBackup == 'y' or twoWayBackup 'Y':
         twoWayBackup = 'n'
         func(destinationLocation, sourceLocation, operation, extras, twoWayBackup)
 
