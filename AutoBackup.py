@@ -43,15 +43,3 @@ while True:
     else:
         print('Please enter a value between 0-3.')
     print('Operation finished')
-
-# To implement
-# Log
-# Try/catch for copy/dir creation
-# ---------
-# Changelog
-# name += ext unnecessary, intergrated to print
-# Added exit option to menu
-# Put ext arrays/lists outside function definition
-# Backup function to avoid continue
-# Input all options in a single line ([op][twoWayBackup]) - operation combo
-# Backup extras
