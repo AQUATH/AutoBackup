@@ -51,7 +51,7 @@ def updateLog(location, name, ext, backupResult):
             log.write('Unable to create the appropriate folder for ' + name + ext)
 
 def main(sourceLocation, destinationLocation, operation, extras, twoWayBackup, createLogCheck):
-    if createLogCheck == 'y' or createLogCheck == 'Y':
+    if createLogCheck == 'y':
         createLogResult = createLog(destinationLocation, sourceLocation)
         logLocation = {0: destinationLocation, 1: sourceLocation}
     for (path, dirs, files) in os.walk(sourceLocation):
@@ -60,13 +60,13 @@ def main(sourceLocation, destinationLocation, operation, extras, twoWayBackup, c
             ext = str.lower(ext)
             if (operation == '1' or operation == '3') and ext in extMusic or extras == 'y' and ext in extExtras:
                 backupResult = backup(sourceLocation, destinationLocation, path, file, name, ext)
-                if backupResult != 0 and (createLogCheck == 'y' or createLogCheck == 'Y'):
+                if backupResult != 0 and createLogCheck == 'y':
                     updateLog(logLocation[createLogResult], name, ext, backupResult)
             if (operation == '2' or operation == '3') and ext in extArtwork and name[:8] != 'AlbumArt' and name != 'Thumbnail' and name != 'Folder':
                 backupResult = backup(sourceLocation, destinationLocation, path, file, name, ext)
-                if backupResult != 0 and (createLogCheck == 'y' or createLogCheck == 'Y'):
+                if backupResult != 0 and createLogCheck == 'y':
                     updateLog(logLocation[createLogResult], name, ext, backupResult)
-    if twoWayBackup == 'y' or twoWayBackup == 'Y':
+    if twoWayBackup == 'y':
         main(destinationLocation, sourceLocation, operation, extras, 'n', createLogCheck)
 
 while True:
