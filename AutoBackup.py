@@ -4,6 +4,7 @@ import shutil
 extMusic = ['.mp3', '.flac', '.aac', '.wav', '.wma', '.ape', '.alac', '.m4a', '.m4b', '.m4p', '.ogg', '.aiff', '.aif']
 extArtwork = ['.jpg', '.png', '.bmp', '.gif', '.jpeg']
 extExtras = ['.m3u', '.m3u8', '.wpl', '.pls', '.asx', '.smi', '.sami', '.xspf', '.txt', '.cue', '.log']
+extBoth = extMusic + extArtwork
 
 def backup(sourceLocation, destinationLocation, path, file, name, ext):
     pathCheck = destinationLocation + '/' + path[(len(sourceLocation)+1):] 
@@ -13,10 +14,10 @@ def backup(sourceLocation, destinationLocation, path, file, name, ext):
         try:
             os.makedirs(pathCheck)
         except:
-            print('Unable to create the appropriate folder for ' + name + ext)
+            print('Unable to create the appropriate folder for', name + ext)
             return 3
     if not os.path.isfile(fileCheck):
-        print(name + ext + ' not found, copying..')
+        print(name + ext, 'not found, copying..')
         try:
             shutil.copy2(file, pathCheck)
             print('Copy finished.')
@@ -32,11 +33,11 @@ def createLog(destinationLocation, sourceLocation):
         try:
             os.makedirs(destinationLocation) 
         except:
-            print('\tUnable to create a log file to: ' + destinationLocation + ' a log file will be saved to: ' + sourceLocation + ' instead.')
+            print('\tUnable to create a log file to:', destinationLocation, 'a log file will be saved to:', sourceLocation, 'instead.')
             with open(sourceLocation + '\AutoBackup.log', 'a') as log:
                 log.write('\n\tDate and time: ' + str(datetime.now())[:19] + '\n\n')
             return 1
-    print('\tA log file will be saved to: ' + destinationLocation)
+    print('\tA log file will be saved to:', destinationLocation)
     with open(destinationLocation + '\AutoBackup.log', 'a') as log:
         log.write('\n\tDate and time: ' + str(datetime.now())[:19] + '\n\n')
     return 0
@@ -44,28 +45,26 @@ def createLog(destinationLocation, sourceLocation):
 def updateLog(location, name, ext, backupResult):
     with open(location + '\AutoBackup.log', 'a', encoding = 'UTF-8') as log:
         if(backupResult == 1):
-            log.write(name + ext + " was copied successfully.\n")
+            log.write(name + ext + ' was copied successfully.\n')
         elif(backupResult == 2):
-            log.write("Unable to copy " + name + ext + " because an error occured.")
+            log.write('Unable to copy ' + name + ext + ' because an error occured.')
         elif(backupResult == 3):
             log.write('Unable to create the appropriate folder for ' + name + ext)
 
 def main(sourceLocation, destinationLocation, operation, extras, twoWayBackup, createLogCheck):
     if createLogCheck == 'y':
         createLogResult = createLog(destinationLocation, sourceLocation)
-        logLocation = {0: destinationLocation, 1: sourceLocation}
+        logLocation = [destinationLocation, sourceLocation]
+    arrays = [extMusic, extArtwork, extBoth]
     for (path, dirs, files) in os.walk(sourceLocation):
         for file in files:
             name, ext = os.path.splitext(file)
             ext = str.lower(ext)
-            if (operation == '1' or operation == '3') and ext in extMusic or extras == 'y' and ext in extExtras:
-                backupResult = backup(sourceLocation, destinationLocation, path, file, name, ext)
-                if backupResult != 0 and createLogCheck == 'y':
-                    updateLog(logLocation[createLogResult], name, ext, backupResult)
-            if (operation == '2' or operation == '3') and ext in extArtwork and name[:8] != 'AlbumArt' and name != 'Thumbnail' and name != 'Folder':
-                backupResult = backup(sourceLocation, destinationLocation, path, file, name, ext)
-                if backupResult != 0 and createLogCheck == 'y':
-                    updateLog(logLocation[createLogResult], name, ext, backupResult)
+            if ext in arrays[int(operation)-1] or ext in extExtras and extras == 'y':
+                if ext not in extArtwork or name[:8] != 'AlbumArt' and name != 'Thumbnail' and name != 'Folder':
+                    backupResult = backup(sourceLocation, destinationLocation, path, file, name, ext)
+                    if backupResult != 0 and createLogCheck == 'y':
+                        updateLog(logLocation[createLogResult], name, ext, backupResult)
     if twoWayBackup == 'y':
         main(destinationLocation, sourceLocation, operation, extras, 'n', createLogCheck)
 
