@@ -94,17 +94,3 @@ while True:
         break
     else:
         print('Please enter a value between 0-3.')
-
-# To implement
-#
-# ---------
-# Changelog
-# Try/catch for copy/dir creation
-# Added ability to create a log file on the destination location
-# Renamed every variable
-# name += ext unnecessary, intergrated to print
-# Added exit option to menu
-# Put ext arrays/lists outside function definition
-# Backup function to avoid continue
-# Input all options in a single line ([op][twoWayBackup]) - operation combo
-# Backup extras
