@@ -1,19 +1,17 @@
 import os
 import shutil
 
+
 ext_music = ['.mp3', '.flac', '.aac', '.wav', '.wma', '.ape', '.alac', '.m4a', '.m4b', '.m4p', '.ogg', '.aiff', '.aif']
 ext_artwork = ['.jpg', '.png', '.bmp', '.gif', '.jpeg']
 ext_extras = ['.m3u', '.m3u8', '.wpl', '.pls', '.asx', '.smi', '.sami', '.xspf', '.txt', '.cue', '.log']
 ext_both = ext_music + ext_artwork
+lists = [ext_music, ext_artwork, ext_both]
 
 
 def backup(destination_location, path, file):
     target_path = destination_location + os.path.sep + path[(len(destination_location)+1):]
     target_file = os.path.join(target_path, file)
-
-    print(destination_location)
-    print(path[(len(destination_location)+1):])
-    print(target_path)
 
     if not os.path.exists(target_path):
         try:
@@ -26,7 +24,7 @@ def backup(destination_location, path, file):
         print(file, 'not found, copying..')
         try:
             shutil.copy2(os.path.join(path, file), target_path)
-            print('Copy finished.')
+            print('Copy finished successfully.')
             return 1  # Returned when the file was not found, and the copy was successful.
         except shutil.Error:
             print('Copy failed.')
@@ -44,13 +42,15 @@ def create_log(destination_location, source_location):
         except OSError:
             print('\tUnable to create a log file to:', destination_location, 'a log file will be saved to:',
                   source_location, 'instead.')
-            with open(os.path.join(source_location, 'AutoBackup.log'), 'a') as log:
+
+            with open(os.path.join(source_location, 'AutoBackup.log'), 'a', encoding='UTF-8') as log:
                 log.write('\tDate and time: ' + str(datetime.now())[:19] + '\n\n')
+
             return 1
 
     print('\tA log file will be saved to:', destination_location)
 
-    with open(os.path.join(destination_location, 'AutoBackup.log'), 'a') as log:
+    with open(os.path.join(destination_location, 'AutoBackup.log'), 'a', encoding='UTF-8') as log:
         log.write('\tDate and time: ' + str(datetime.now())[:19] + '\n\n')
 
     return 0
@@ -71,14 +71,12 @@ def main(source_location, destination_location, operation, extras, two_way_backu
         create_log_result = create_log(destination_location, source_location)
         log_location = [destination_location, source_location]
 
-    arrays = [ext_music, ext_artwork, ext_both]
-
     for path, _, files in os.walk(source_location):
         for file in files:
             name, ext = os.path.splitext(file)
             ext = str.lower(ext)
-            print(ext)
-            if ext in arrays[int(operation)-1] or ext in ext_extras and extras == 'y':
+
+            if ext in lists[int(operation) - 1] or extras == 'y' and ext in ext_extras:
                 if ext not in ext_artwork or name[:8] != 'AlbumArt' and name != 'Thumbnail' and name != 'Folder':
                     backup_result = backup(destination_location, path, file)
 
