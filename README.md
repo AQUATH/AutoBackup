@@ -1,6 +1,6 @@
 # AutoBackup
 
-A simple backup script suited to music libraries. It is able to backup audio files, artwork and misc. files used in music libraries such as playlists.
+A simple backup script suited to music libraries. It is able to backup audio files, artwork and misc. files, such as playlists used in music libraries.
 
 ## Getting Started
 
