@@ -6,7 +6,7 @@ A simple backup script suited to music libraries. It is able to backup audio fil
 
 ### Prerequisites
 
-To use AutoBackup you only need Python 3. No installation needed.
+To use AutoBackup you only need Python 3. No installation is needed.
 
 ### Using AutoBackup
 
