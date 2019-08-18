@@ -10,7 +10,7 @@ To use AutoBackup you only need Python 3. No installation is needed.
 
 ### Using AutoBackup
 
-Call AutoBackup as follows:
+Run AutoBackup as follows:
 ```
 $ python3 AutoBackup.py <source> <destination> <music | artwork> [options]
 ```
