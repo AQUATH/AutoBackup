@@ -18,7 +18,7 @@ where these are mandatory arguments:
 ```
 source: source folder
 destination: destination folder
-<music | artwork>:
+music | artwork:
 -m or --music to backup audio files
 -a or --artwork to backup artwork (image) files
 -ma or -c or --complete to backup both
