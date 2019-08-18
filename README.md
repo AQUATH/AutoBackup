@@ -4,8 +4,6 @@ A simple backup script suited to music libraries. It is able to backup audio fil
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
 ### Prerequisites
 
 To use AutoBackup you only need Python 3. No installation needed.
