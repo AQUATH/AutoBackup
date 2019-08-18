@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 
 
 ext_music = ['.mp3', '.flac', '.aac', '.wav', '.wma', '.ape', '.alac', '.m4a', '.m4b', '.m4p', '.ogg', '.aiff', '.aif']
@@ -9,23 +10,24 @@ ext_both = ext_music + ext_artwork
 lists = [ext_music, ext_artwork, ext_both]
 
 
-def backup(destination_location, path, file):
-    target_path = destination_location + os.path.sep + path[(len(destination_location)+1):]
+def file_copy(destination_location, path, file, source):
+    # manual path joining is used because os.path.join returns the second argument when two absolute paths are joined
+    # e.g. /foo and /bar are joined as /bar instead of /foo/bar
+    # whereas this method creates /foo//bar which is then normalized by abspath to /foo/bar
+    target_path = os.path.abspath(destination_location + os.path.sep + path[len(source):])
     target_file = os.path.join(target_path, file)
 
     if not os.path.exists(target_path):
         try:
             os.makedirs(target_path)
         except OSError:
-            print('Unable to create the appropriate folder for', file)
+            print("Unable to create the appropriate folder for", file)
             return 3
 
     if not os.path.isfile(target_file):
-        print(file, 'not found, copying..')
         try:
             shutil.copy2(os.path.join(path, file), target_path)
-            print('Copy finished successfully.')
-            return 1  # Returned when the file was not found, and the copy was successful.
+            return 1  # Returned when the file was not found and the copy was successful.
         except shutil.Error:
             print('Copy failed.')
             return 2  # Returned when the file was not found, but the copy failed.
@@ -33,31 +35,35 @@ def backup(destination_location, path, file):
     return 0  # Returned when the file already exists in destination_location.
 
 
-def create_log(destination_location, source_location):
-    from datetime import datetime
-
-    if not os.path.exists(destination_location):
+def create_log(log_file, source_location, destination_location, operation, extras, sync):
+    if not os.path.exists("Logs"):
         try:
-            os.makedirs(destination_location) 
+            os.makedirs("Logs")
         except OSError:
-            print('\tUnable to create a log file to:', destination_location, 'a log file will be saved to:',
-                  source_location, 'instead.')
+            print("ERROR: Unable to create log-folder.")
+            return
 
-            with open(os.path.join(source_location, 'AutoBackup.log'), 'a', encoding='UTF-8') as log:
-                log.write('\tDate and time: ' + str(datetime.now())[:19] + '\n\n')
+    try:
+        with open(os.path.join("Logs", log_file), 'w+', encoding='UTF-8') as log:
+            log.write("Source Location: " + source_location + "\n")
+            log.write("Destination Location: " + destination_location + "\n")
+            if operation == 0:
+                log.write("Chosen Operation: Music only.\n")
+            elif operation == 1:
+                log.write("Chosen Operation: Artwork only.\n")
+            elif operation == 2:
+                log.write("Chosen Operation: Music and artwork.\n")
+            else:
+                log.write("Chosen Operation: Unknown operation, probably an error has occurred.\n")
+            log.write("Extra files: " + str(extras) + "\n")
+            log.write("Folder-Sync: " + str(sync) + "\n\n")
+    except OSError:
+        print("ERROR: Unable to create log-folder or logfile.")
+    return
 
-            return 1
 
-    print('\tA log file will be saved to:', destination_location)
-
-    with open(os.path.join(destination_location, 'AutoBackup.log'), 'a', encoding='UTF-8') as log:
-        log.write('\tDate and time: ' + str(datetime.now())[:19] + '\n\n')
-
-    return 0
-
-
-def update_log(location, file, backup_result):
-    with open(os.path.join(location, 'AutoBackup.log'), 'a', encoding='UTF-8') as log:
+def update_log(file, backup_result, log_file):
+    with open(os.path.join("Logs", log_file), 'a', encoding='UTF-8') as log:
         if backup_result == 1:
             log.write(file + ' was copied successfully.\n')
         elif backup_result == 2:
@@ -66,44 +72,71 @@ def update_log(location, file, backup_result):
             log.write('Unable to create the appropriate folder for ' + file + '\n')
 
 
-def main(source_location, destination_location, operation, extras, two_way_backup, enable_log):
-    if enable_log == 'y':
-        create_log_result = create_log(destination_location, source_location)
-        log_location = [destination_location, source_location]
+def main(source_location, destination_location, operation, extras, sync, log):
+    if log:
+        from datetime import datetime
+
+        current_date = str(datetime.now())[:19]
+        log_file = "AutoBackup_" + current_date[:10] + '_' + current_date[11:] + ".log"
+        create_log(log_file, source_location, destination_location, operation, extras, sync)
 
     for path, _, files in os.walk(source_location):
         for file in files:
             name, ext = os.path.splitext(file)
             ext = str.lower(ext)
 
-            if ext in lists[int(operation) - 1] or extras == 'y' and ext in ext_extras:
+            if ext in lists[int(operation)] or extras and ext in ext_extras:
                 if ext not in ext_artwork or name[:8] != 'AlbumArt' and name != 'Thumbnail' and name != 'Folder':
-                    backup_result = backup(destination_location, path, file)
+                    backup_result = file_copy(destination_location, path, file, source_location)
 
-                    if backup_result != 0 and enable_log == 'y':
-                        update_log(log_location[create_log_result], file, backup_result)
+                    if log and backup_result > 0:
+                        update_log(file, backup_result, log_file)
 
-    if two_way_backup == 'y':
-        main(destination_location, source_location, operation, extras, 'n', enable_log)
+    if sync:
+        main(destination_location, source_location, operation, extras, False, log)
 
 
-while True:
-    print('Back up: \n\tMusic - 1\n\tArtwork - 2\n\tBoth - 3\nExit - 0')
-    print('Back up extras? (play-lists, logs, texts) y/n')
-    print('Two-way backup? y/n')
-    print('Save a log file? y/n')
+def argument_validity(list_of_arguments):
+    extras_flag = False
+    sync_flag = False
+    log_flag = False
 
-    selection = input('Enter your selection in a single line: ')
+    if len(list_of_arguments) < 4:
+        print("Usage: python3", list_of_arguments[0], "<source> <destination> <music | artwork> [options]")
+        sys.exit()
 
-    if selection[0] in ['1', '2', '3']:
-        source = input('Enter Source Location: ')
-        destination = input('Enter Destination Location: ')
+    source = os.path.abspath(list_of_arguments[1])
 
-        main(source, destination, selection[0], str.lower(selection[1]), str.lower(selection[2]),
-             str.lower(selection[3]))
+    if not os.path.exists(source):
+        print(list_of_arguments[1], "does not exist.")
+        sys.exit()
 
-        print('\tOperation finished.')
-    elif selection[0] == '0':
-        break
+    destination = os.path.abspath(list_of_arguments[2])
+
+    if list_of_arguments[3] == "-m" or list_of_arguments[3] == "--music":
+        selection = 0
+    elif list_of_arguments[3] == "-a" or list_of_arguments[3] == "--artwork":
+        selection = 1
+    elif list_of_arguments[3] == "-ma" or list_of_arguments[3] == "-c" or list_of_arguments[3] == "--complete":
+        selection = 2
     else:
-        print('Please enter a value between 0-3.')
+        print("Unrecognized option", list_of_arguments[3])
+        sys.exit()
+
+    for i in range(4, len(list_of_arguments)):
+        if list_of_arguments[i] == "-e" or list_of_arguments[i] == "--extras":
+            extras_flag = True
+        elif list_of_arguments[i] == "-s" or list_of_arguments[i] == "--sync":
+            sync_flag = True
+        elif list_of_arguments[i] == "-l" or list_of_arguments[i] == "--log":
+            log_flag = True
+        else:
+            print("Unrecognized option", list_of_arguments[i])
+            sys.exit()
+
+    return source, destination, selection, extras_flag, sync_flag, log_flag
+
+
+if __name__ == "__main__":
+    source, destination, selection, extras_flag, sync_flag, log_flag = argument_validity(sys.argv)
+    main(source, destination, selection, extras_flag, sync_flag, log_flag)
