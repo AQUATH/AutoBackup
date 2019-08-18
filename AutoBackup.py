@@ -86,7 +86,7 @@ def main(source_location, destination_location, operation, extras, sync, log):
             ext = str.lower(ext)
 
             if ext in lists[int(operation)] or extras and ext in ext_extras:
-                if ext not in ext_artwork or name[:8] != 'AlbumArt' and name != 'Thumbnail' and name != 'Folder':
+                if ext not in ext_artwork or name[:8] != "AlbumArt" and name != "Thumbnail" and name != "Folder":
                     backup_result = file_copy(destination_location, path, file, source_location)
 
                     if log and backup_result > 0:
