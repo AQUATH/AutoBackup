@@ -3,18 +3,18 @@ import shutil
 import sys
 
 
-ext_music = ['.mp3', '.flac', '.aac', '.wav', '.wma', '.ape', '.alac', '.m4a', '.m4b', '.m4p', '.ogg', '.aiff', '.aif']
-ext_artwork = ['.jpg', '.png', '.bmp', '.gif', '.jpeg']
-ext_extras = ['.m3u', '.m3u8', '.wpl', '.pls', '.asx', '.smi', '.sami', '.xspf', '.txt', '.cue', '.log']
+ext_music = [".mp3", ".flac", ".aac", ".wav", ".wma", ".ape", ".alac", ".m4a", ".m4b", ".m4p", ".ogg", ".aiff", ".aif"]
+ext_artwork = [".jpg", ".png", ".bmp", ".gif", ".jpeg"]
+ext_extras = [".m3u", ".m3u8", ".wpl", ".pls", ".asx", ".smi", ".sami", ".xspf", ".txt", ".cue", ".log"]
 ext_both = ext_music + ext_artwork
 lists = [ext_music, ext_artwork, ext_both]
 
 
-def file_copy(destination_location, path, file, source):
+def file_copy(destination_location, path, file, source_location):
     # manual path joining is used because os.path.join returns the second argument when two absolute paths are joined
     # e.g. /foo and /bar are joined as /bar instead of /foo/bar
-    # whereas this method creates /foo//bar which is then normalized by abspath to /foo/bar
-    target_path = os.path.abspath(destination_location + os.path.sep + path[len(source):])
+    # whereas this method creates /foo//bar which is then normalized by normpath to /foo/bar
+    target_path = os.path.normpath(destination_location + os.path.sep + path[len(source_location):])
     target_file = os.path.join(target_path, file)
 
     if not os.path.exists(target_path):
@@ -29,7 +29,7 @@ def file_copy(destination_location, path, file, source):
             shutil.copy2(os.path.join(path, file), target_path)
             return 1  # Returned when the file was not found and the copy was successful.
         except shutil.Error:
-            print('Copy failed.')
+            print("Copy failed.")
             return 2  # Returned when the file was not found, but the copy failed.
 
     return 0  # Returned when the file already exists in destination_location.
@@ -40,11 +40,11 @@ def create_log(log_file, source_location, destination_location, operation, extra
         try:
             os.makedirs("Logs")
         except OSError:
-            print("ERROR: Unable to create log-folder.")
+            print("ERROR: Unable to create log folder.")
             return
 
     try:
-        with open(os.path.join("Logs", log_file), 'w+', encoding='UTF-8') as log:
+        with open(os.path.join("Logs", log_file), "w+", encoding="UTF-8") as log:
             log.write("Source Location: " + source_location + "\n")
             log.write("Destination Location: " + destination_location + "\n")
             if operation == 0:
@@ -63,13 +63,14 @@ def create_log(log_file, source_location, destination_location, operation, extra
 
 
 def update_log(file, backup_result, log_file):
-    with open(os.path.join("Logs", log_file), 'a', encoding='UTF-8') as log:
+    with open(os.path.join("Logs", log_file), 'a', encoding="UTF-8") as log:
         if backup_result == 1:
-            log.write(file + ' was copied successfully.\n')
+            #
+            log.write(file + "\n")
         elif backup_result == 2:
-            log.write('Unable to copy ' + file + ' because an error occurred.\n')
+            log.write("Unable to copy " + file + " because an error occurred.\n")
         elif backup_result == 3:
-            log.write('Unable to create the appropriate folder for ' + file + '\n')
+            log.write("Unable to create the appropriate folder for " + file + "\n")
 
 
 def main(source_location, destination_location, operation, extras, sync, log):
