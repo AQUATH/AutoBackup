@@ -1,34 +1,37 @@
 # AutoBackup
 
-A simple backup script suited to music libraries. It is able to backup audio files, artwork and misc. files, such as playlists used in music libraries.
+A simple backup script aimed for music libraries. It is able to back-up audio files, artwork and misc. files, such as playlists used in music libraries.
 
 ## Getting Started
 
 ### Prerequisites
 
-To use AutoBackup you only need Python 3. No installation is needed.
+To use AutoBackup you only need Python 3.2+.
 
 ### Using AutoBackup
 
 Run AutoBackup as follows:
 ```
-$ python3 AutoBackup.py <source> <destination> <music | artwork> [options]
+$ python3 autobackup.py <source> <destination> <music | artwork> [options]
 ```
 where these are mandatory arguments:
 ```
-source: source folder
-destination: destination folder
+source          location containing the files to be backed up
+destination     location where the files will be stored
+
 music | artwork:
--m or --music to backup audio files
--a or --artwork to backup artwork (image) files
--ma or -c or --complete to backup both
+m or music      backup audio files only
+a or artwork    backup artwork (image) files only
+c or complete   backup both audio and artwork
 ```
 while these are optional:
 ```
 options:
--e or --extras to backup files that may be present in a music library, besides audio and artwork
--s or --sync to synchronize source and destination folders. By using this option both folders will contain the same files when AutoBackup finishes its execution.
--l or --log to save a log file in the same directory as AutoBackup.py
+-h or --help    show help message and exit
+-e or --extras  backup files that may be present in a music library, besides audio and artwork
+-s or --sync    synchronize source and destination folders
+-l or --log     save a log file in the same directory as autobackup.py
+-v or --version show program's version number and exit
 ```
 
 ## License
