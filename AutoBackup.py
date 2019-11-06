@@ -1,6 +1,7 @@
 import os
 import shutil
 import sys
+import argparse
 
 
 ext_music = [".mp3", ".flac", ".aac", ".wav", ".wma", ".ape", ".alac", ".m4a", ".m4b", ".m4p", ".ogg", ".aiff", ".aif"]
@@ -36,6 +37,8 @@ def file_copy(destination_location, path, file, source_location):
 
 
 def create_log(log_file, source_location, destination_location, operation, extras, sync):
+    operation_list = ["Music only.", "Artwork only.", "Music and Artwork."]
+
     if not os.path.exists("Logs"):
         try:
             os.makedirs("Logs")
@@ -47,14 +50,7 @@ def create_log(log_file, source_location, destination_location, operation, extra
         with open(os.path.join("Logs", log_file), "w+", encoding="UTF-8") as log:
             log.write("Source Location: " + source_location + "\n")
             log.write("Destination Location: " + destination_location + "\n")
-            if operation == 0:
-                log.write("Chosen Operation: Music only.\n")
-            elif operation == 1:
-                log.write("Chosen Operation: Artwork only.\n")
-            elif operation == 2:
-                log.write("Chosen Operation: Music and artwork.\n")
-            else:
-                log.write("Chosen Operation: Unknown operation, probably an error has occurred.\n")
+            log.write("Chosen Operation: " + operation_list[operation] + "\n")
             log.write("Extra files: " + str(extras) + "\n")
             log.write("Folder-Sync: " + str(sync) + "\n\n")
     except OSError:
@@ -65,7 +61,6 @@ def create_log(log_file, source_location, destination_location, operation, extra
 def update_log(file, backup_result, log_file):
     with open(os.path.join("Logs", log_file), 'a', encoding="UTF-8") as log:
         if backup_result == 1:
-            #
             log.write(file + "\n")
         elif backup_result == 2:
             log.write("Unable to copy " + file + " because an error occurred.\n")
@@ -73,7 +68,7 @@ def update_log(file, backup_result, log_file):
             log.write("Unable to create the appropriate folder for " + file + "\n")
 
 
-def main(source_location, destination_location, operation, extras, sync, log):
+def scan_and_backup(source_location, destination_location, operation, extras, sync, log):
     if log:
         from datetime import datetime
 
@@ -94,50 +89,43 @@ def main(source_location, destination_location, operation, extras, sync, log):
                         update_log(file, backup_result, log_file)
 
     if sync:
-        main(destination_location, source_location, operation, extras, False, log)
+        scan_and_backup(destination_location, source_location, operation, extras, False, log)
 
 
-def argument_validity(list_of_arguments):
-    extras_flag = False
-    sync_flag = False
-    log_flag = False
+def argument_validity():
+    parser = argparse.ArgumentParser()
+    
+    parser.add_argument("source", help="location containing the files to be backed up")
+    parser.add_argument("destination", help="location where the files will be stored")
+    parser.add_argument("action", metavar="action", choices=["m", "music", "a", "artwork", "c", "complete"],
+                        help="m or music: audio files only, a or artwork: image files only, c or complete: both audio"
+                             " and image files")
+    parser.add_argument("-e", "--extras", action="store_true", dest="extras_flag", help="back-up extra files")
+    parser.add_argument("-s", "--sync", action="store_true", dest="sync_flag",
+                        help="synchronize source and destination folder")
+    parser.add_argument("-l", "--log", action="store_true", dest="log_flag", help="save a log file")
+    parser.add_argument("-v", "--version", action="version", version="%(prog)s 1.3.0")
 
-    if len(list_of_arguments) < 4:
-        print("Usage: python3", list_of_arguments[0], "<source> <destination> <music | artwork> [options]")
-        sys.exit()
+    args = parser.parse_args()
 
-    source = os.path.abspath(list_of_arguments[1])
+    source = os.path.abspath(args.source)
 
     if not os.path.exists(source):
-        print(list_of_arguments[1], "does not exist.")
+        print(source, "does not exist.")
         sys.exit()
 
-    destination = os.path.abspath(list_of_arguments[2])
+    destination = os.path.abspath(args.destination)
 
-    if list_of_arguments[3] == "-m" or list_of_arguments[3] == "--music":
+    if args.action == "m" or args.action == "music":
         selection = 0
-    elif list_of_arguments[3] == "-a" or list_of_arguments[3] == "--artwork":
+    elif args.action == "a" or args.action == "artwork":
         selection = 1
-    elif list_of_arguments[3] == "-ma" or list_of_arguments[3] == "-c" or list_of_arguments[3] == "--complete":
-        selection = 2
     else:
-        print("Unrecognized option", list_of_arguments[3])
-        sys.exit()
+        selection = 2
 
-    for i in range(4, len(list_of_arguments)):
-        if list_of_arguments[i] == "-e" or list_of_arguments[i] == "--extras":
-            extras_flag = True
-        elif list_of_arguments[i] == "-s" or list_of_arguments[i] == "--sync":
-            sync_flag = True
-        elif list_of_arguments[i] == "-l" or list_of_arguments[i] == "--log":
-            log_flag = True
-        else:
-            print("Unrecognized option", list_of_arguments[i])
-            sys.exit()
-
-    return source, destination, selection, extras_flag, sync_flag, log_flag
+    return source, destination, selection, args.extras_flag, args.sync_flag, args.log_flag
 
 
 if __name__ == "__main__":
-    source, destination, selection, extras_flag, sync_flag, log_flag = argument_validity(sys.argv)
-    main(source, destination, selection, extras_flag, sync_flag, log_flag)
+    source, destination, selection, extras_flag, sync_flag, log_flag = argument_validity()
+    scan_and_backup(source, destination, selection, extras_flag, sync_flag, log_flag)
