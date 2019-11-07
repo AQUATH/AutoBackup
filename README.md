@@ -7,7 +7,7 @@ used in music libraries, such as playlists, cue files, logs, etc.
 
 ### Prerequisites
 
-To use AutoBackup you only need Python 3.2+.
+Python 3.2+
 
 ### Using AutoBackup
 
