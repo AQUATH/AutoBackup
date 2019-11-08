@@ -1,7 +1,16 @@
 <b>Changelog</b>
 <br>
+<br><b>Version 1.3.0</b>
+<br>Changes: 
+<br>-Script's parameters are now given as console arguments.
+<br>-PEP8 coding style.
+<br>Features:
+<br>-Added the option to store a log file.
+<br>-Added backup option for other files found in music libraries (not just audio and artwork).
+<br>-Ability to work with relative paths.
+<br>-OS independent.
 <br>
-<b>Version 1.2.1</b>
+<br><b>Version 1.2.1</b>
 <br>Fixed: RecursionError caused when choosing two-way backup.
 <br>Bug-fix: 'Back-up Both' option wouldn't back up music.
 <br>Artwork backup now ignores every image starting with "AlbumArt" instead of "AlbumArtSmall".
